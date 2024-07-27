@@ -1,26 +1,36 @@
-from pygame.sprite import Sprite
+from pygame.rect import Rect
+from pygame.sprite import AbstractGroup, DirtySprite
 from pygame.surface import Surface
+from pygame.event import Event
 from animation import Animation
+from files import *
 
-class Obstacle:
-    def __init__(self) -> None:
-        self.current_sprite = Sprite()
+class Obstacle(DirtySprite):
+    def __init__(self, *groups: AbstractGroup) -> None:
+        super().__init__(*groups)
         self.active_animation = None
     
-    def start_animation(self, animation: Animation) -> None:
+    def start_animation(self, animation: Animation):
+        animation.restart()
         self.active_animation = animation
     
-    def get_sprite(self) -> Sprite:
-        return self.current_sprite
-    
     def update(self):
-        pass
-    
-    def draw(self, scenes: Surface) -> None:
+        super().update()
         if self.active_animation:
             self.active_animation.update()
             sprite = self.active_animation.get_current_frame()
-            self.current_sprite.image = sprite.image
-            self.current_sprite.rect.width = sprite.rect.width
-            self.current_sprite.rect.height = sprite.rect.width
-            scenes.blit(sprite.image, self.current_sprite, sprite)
+            self.image = sprite.image
+            self.rect.width = sprite.rect.width
+            self.rect.height = sprite.rect.height
+            self.source_rect = sprite.rect
+    
+    def collision(self, other: 'Obstacle'):
+        pass
+    
+    def handle_event(self, event: Event) -> bool:
+        return False
+    
+class Hero(Obstacle):
+    def __init__(self) -> None:
+        super().__init__()
+        self.active_animation = FileUtils.get_animation(R.animation.hero_run)
