@@ -8,19 +8,19 @@ from typing import Tuple, Dict
 class R:
     pictures_directory = "res/pictures/"
     animation_directory = "res/animation/"
+    
     class pictures:
-        class background:
-            sky = "pictures/sky.png"
-            meadow = "pictures/meadow.png"
-            mountain = "pictures/mountain.png"
+        background = "background.png"
         hero_run = "hero_run.png"
         hero_jump = "hero_jump.png"
         hero_down = "hero_down.png"
+        lion_run = "lion_run.png"
         
     class animation:
         hero_run = "hero_run.txt"
         hero_jump = "hero_jump.txt"
         hero_down = "hero_down.txt"
+        lion_run = "lion_rum.txt"
 #end define
 
 class FileUtils:
@@ -40,12 +40,12 @@ class FileUtils:
         path = R.animation_directory + path
         frames = cls.__path_to_data.get(path)
         if(frames is None):
-            frames = cls.creat_frames(path)
+            frames = cls.__creat_frames(path)
             cls.__path_to_data[path] = frames
         return Animation(frames)
     
     @classmethod
-    def creat_frames(cls, path: str) -> Tuple[Sprite]:
+    def __creat_frames(cls, path: str) -> Tuple[Sprite]:
         text = open(path).read()
         frames = list()
         for line in text.splitlines():
